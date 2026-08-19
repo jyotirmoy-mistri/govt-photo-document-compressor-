@@ -1,0 +1,1832 @@
+<!DOCTYPE html>
+<html lang="bn" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  
+  <!-- High Performance SEO Meta Tags -->
+  <title>E-Photo & Doc Converter Pro — Official Govt Photo, Signature & Aadhaar Merger Studio</title>
+  <meta name="description" content="All India & West Bengal Govt Exam Photo, Signature Resizer & 2-in-1 Aadhaar Document Merger. NSDL PAN, Passport, SSC, UPSC, WB Police, WBCS standard compliant.">
+  <meta name="keywords" content="photo resizer, signature resizer, pan card photo, passport photo, ssc photo resize, wb police photo, aadhaar merge 2 in 1, govt exam photo tool">
+  <meta name="author" content="E-Photo Converter Pro">
+  <meta name="robots" content="index, follow">
+
+  <!-- Google Fonts: Inter & Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Google MediaPipe AI Engine -->
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/selfie_segmentation.js" crossorigin="anonymous"></script>
+
+  <style>
+    /* CSS Variables for Day & Night Themes */
+    :root[data-theme="dark"] {
+      --primary: #38bdf8;
+      --primary-hover: #0284c7;
+      --accent: #818cf8;
+      --success: #10b981;
+      --danger: #ef4444;
+      --bg-base: #030712;
+      --glass-nav: rgba(15, 23, 42, 0.92);
+      --glass-panel: rgba(15, 23, 42, 0.85);
+      --glass-card: rgba(30, 41, 59, 0.65);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --text-main: #f8fafc;
+      --text-sub: #94a3b8;
+      --text-muted: #64748b;
+      --canvas-bg: #020617;
+    }
+
+    :root[data-theme="light"] {
+      --primary: #0284c7;
+      --primary-hover: #0369a1;
+      --accent: #4f46e5;
+      --success: #059669;
+      --danger: #dc2626;
+      --bg-base: #f1f5f9;
+      --glass-nav: rgba(255, 255, 255, 0.92);
+      --glass-panel: rgba(255, 255, 255, 0.85);
+      --glass-card: rgba(241, 245, 249, 0.85);
+      --glass-border: rgba(0, 0, 0, 0.08);
+      --text-main: #0f172a;
+      --text-sub: #475569;
+      --text-muted: #94a3b8;
+      --canvas-bg: #e2e8f0;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0; padding: 0;
+      font-family: 'Inter', -apple-system, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+      transition: background-color 0.25s ease, border-color 0.25s ease;
+    }
+
+    body {
+      background-color: var(--bg-base);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Ambient Dynamic Animated Background Canvas */
+    #ambientBg {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.45;
+    }
+
+    /* Sticky Professional Navigation Header */
+    nav.top-navbar {
+      position: sticky;
+      top: 0;
+      width: 100%;
+      background: var(--glass-nav);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--glass-border);
+      padding: 0.75rem 1.4rem;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .nav-brand-box {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+    }
+
+    .nav-brand-logo {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, #38bdf8 0%, #6366f1 100%);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.35);
+    }
+
+    .nav-brand-logo svg {
+      width: 20px;
+      height: 20px;
+      fill: none;
+      stroke: #ffffff;
+      stroke-width: 2;
+    }
+
+    .nav-brand-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.15rem;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+      background: linear-gradient(to right, var(--primary), var(--accent), #f472b6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .nav-right-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .theme-toggle-btn {
+      background: var(--glass-card);
+      border: 1px solid var(--glass-border);
+      color: var(--text-main);
+      padding: 0.4rem 0.7rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .nav-badge-cert {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+      color: #34d399;
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 0.25rem 0.65rem;
+      border-radius: 20px;
+    }
+
+    .cert-dot {
+      width: 6px;
+      height: 6px;
+      background: #10b981;
+      border-radius: 50%;
+      box-shadow: 0 0 6px #10b981;
+    }
+
+    /* Main Container */
+    .main-container {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 940px;
+      padding: 1rem 0.8rem 2.5rem 0.8rem;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    /* Stepper Bar */
+    .stepper-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.1rem;
+      background: var(--glass-panel);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--glass-border);
+      border-radius: 30px;
+      padding: 0.4rem 0.8rem;
+    }
+
+    .step-node {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 0.25rem 0.6rem;
+      border-radius: 16px;
+      transition: all 0.2s;
+    }
+
+    .step-node.active { color: var(--primary); background: rgba(56, 189, 248, 0.12); }
+    .step-node.completed { color: #34d399; }
+
+    .node-num {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.72rem;
+    }
+
+    .step-node.active .node-num {
+      background: var(--primary);
+      color: #030712;
+      font-weight: 700;
+    }
+
+    .step-node.completed .node-num {
+      background: #10b981;
+      color: #ffffff;
+    }
+
+    /* Step Card Views */
+    .step-view {
+      display: none;
+      background: var(--glass-panel);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 1.3rem 1.1rem;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      animation: fadeIn 0.25s ease;
+    }
+
+    .step-view.active { display: block; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .panel-header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--glass-border);
+      padding-bottom: 0.6rem;
+      margin-bottom: 1rem;
+    }
+
+    .panel-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    /* Mode Switcher */
+    .mode-switch-box {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.6rem;
+      margin-bottom: 1.2rem;
+      background: var(--glass-card);
+      padding: 0.4rem;
+      border-radius: 12px;
+      border: 1px solid var(--glass-border);
+    }
+
+    .mode-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-sub);
+      padding: 0.65rem 0.8rem;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      transition: all 0.2s;
+    }
+
+    .mode-btn.active {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+      color: #ffffff;
+      box-shadow: 0 4px 15px rgba(56, 189, 248, 0.3);
+    }
+
+    /* Search & Filter Bar */
+    .search-wrapper {
+      position: relative;
+      margin-bottom: 0.8rem;
+    }
+
+    .search-wrapper svg {
+      position: absolute;
+      left: 0.9rem;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 16px;
+      height: 16px;
+      stroke: var(--text-muted);
+      fill: none;
+    }
+
+    .search-wrapper input {
+      width: 100%;
+      background: var(--glass-card);
+      border: 1px solid var(--glass-border);
+      color: var(--text-main);
+      padding: 0.65rem 0.8rem 0.65rem 2.5rem;
+      border-radius: 10px;
+      font-size: 0.88rem;
+      outline: none;
+    }
+
+    .search-wrapper input:focus { border-color: var(--primary); }
+
+    .category-filter-bar {
+      display: flex;
+      gap: 0.35rem;
+      margin-bottom: 1.1rem;
+      overflow-x: auto;
+      padding-bottom: 0.2rem;
+    }
+
+    .cat-pill {
+      background: var(--glass-card);
+      border: 1px solid var(--glass-border);
+      color: var(--text-sub);
+      padding: 0.35rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+
+    .cat-pill.active {
+      background: rgba(56, 189, 248, 0.18);
+      border-color: var(--primary);
+      color: var(--text-main);
+    }
+
+    /* 2-Column Wide Grid */
+    .two-col-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.8rem;
+      max-height: 480px;
+      overflow-y: auto;
+      padding-right: 0.2rem;
+    }
+
+    @media (max-width: 650px) {
+      .two-col-grid { grid-template-columns: 1fr; }
+    }
+
+    .portal-item-card {
+      background: var(--glass-card);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      gap: 0.85rem;
+      align-items: center;
+    }
+
+    .portal-item-card:hover {
+      border-color: var(--primary);
+      background: rgba(56, 189, 248, 0.08);
+      transform: translateY(-2px);
+    }
+
+    .portal-item-card.selected {
+      background: rgba(56, 189, 248, 0.2);
+      border-color: var(--primary);
+    }
+
+    .portal-emblem-box {
+      width: 42px;
+      height: 42px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--glass-border);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .portal-emblem-box svg { width: 28px; height: 28px; }
+
+    .portal-info-box {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+    }
+
+    .portal-top-tags {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .dept-badge {
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: var(--primary);
+      background: rgba(56, 189, 248, 0.14);
+      padding: 0.1rem 0.45rem;
+      border-radius: 4px;
+    }
+
+    .dpi-badge { font-size: 0.68rem; color: var(--text-muted); font-weight: 600; }
+    .p-title-text { font-size: 0.9rem; font-weight: 700; color: var(--text-main); }
+
+    .p-dim-row {
+      font-size: 0.74rem;
+      color: var(--text-sub);
+      display: flex;
+      flex-direction: column;
+      gap: 0.1rem;
+    }
+
+    .p-dim-row span.cm-tag { color: #f472b6; font-weight: 600; }
+
+    /* STEP 2: Photo Editor Stage */
+    .pro-dropzone {
+      border: 2px dashed var(--primary);
+      border-radius: 12px;
+      padding: 1.2rem 0.8rem;
+      text-align: center;
+      background: var(--glass-card);
+      cursor: pointer;
+      margin-bottom: 0.9rem;
+      transition: all 0.2s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .pro-dropzone svg {
+      width: 30px;
+      height: 30px;
+      stroke: var(--primary);
+      fill: none;
+    }
+
+    /* Dual Dropzone for Document Merger */
+    .dual-drop-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.8rem;
+      margin-bottom: 0.9rem;
+    }
+
+    @media (max-width: 600px) {
+      .dual-drop-row { grid-template-columns: 1fr; }
+    }
+
+    .doc-side-box {
+      border: 2px dashed var(--accent);
+      border-radius: 12px;
+      padding: 1rem;
+      text-align: center;
+      background: var(--glass-card);
+      cursor: pointer;
+    }
+
+    .doc-side-box.loaded {
+      border-style: solid;
+      border-color: var(--success);
+      background: rgba(16, 185, 129, 0.1);
+    }
+
+    .editor-stage-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: var(--canvas-bg);
+      border-radius: 12px;
+      padding: 0.9rem;
+      border: 1px solid var(--glass-border);
+      margin-bottom: 0.9rem;
+      min-height: 250px;
+    }
+
+    #editorCanvas {
+      max-width: 100%;
+      max-height: 270px;
+      border-radius: 6px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+      background: #ffffff;
+    }
+
+    /* History & Undo/Redo Bar */
+    .history-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.7rem;
+    }
+
+    .history-btn-group {
+      display: flex;
+      gap: 0.4rem;
+    }
+
+    .btn-hist {
+      background: var(--glass-card);
+      border: 1px solid var(--glass-border);
+      color: var(--text-main);
+      padding: 0.35rem 0.65rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .btn-hist:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    /* Smart Framing & Zoom Sliders */
+    .slider-control-box {
+      background: var(--glass-card);
+      border: 1px solid var(--glass-border);
+      border-radius: 10px;
+      padding: 0.7rem 0.8rem;
+      margin-bottom: 0.9rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.7rem;
+    }
+
+    .slider-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+
+    .slider-item label {
+      font-size: 0.74rem;
+      color: var(--primary);
+      font-weight: 600;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .slider-item input[type="range"] {
+      width: 100%;
+      accent-color: var(--primary);
+      cursor: pointer;
+    }
+
+    /* Tool Buttons */
+    .editor-tool-row {
+      display: flex;
+      gap: 0.45rem;
+      flex-wrap: wrap;
+      margin-bottom: 0.9rem;
+    }
+
+    .btn-action-tool {
+      background: var(--glass-card);
+      border: 1px solid var(--glass-border);
+      color: var(--text-main);
+      padding: 0.5rem 0.75rem;
+      border-radius: 8px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .btn-action-tool svg {
+      width: 14px;
+      height: 14px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+    }
+
+    .btn-action-tool:hover {
+      background: rgba(56, 189, 248, 0.15);
+      border-color: var(--primary);
+    }
+
+    .btn-ai-cutout {
+      background: linear-gradient(135deg, #ec4899, #8b5cf6);
+      border: none;
+      color: #ffffff;
+    }
+
+    /* Color Swatches */
+    .color-swatch-row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.9rem;
+      flex-wrap: wrap;
+    }
+
+    .color-circle-btn {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      border: 2px solid rgba(255, 255, 255, 0.25);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .color-circle-btn.active {
+      transform: scale(1.2);
+      border-color: var(--primary);
+      box-shadow: 0 0 8px rgba(56, 189, 248, 0.6);
+    }
+
+    /* Name & Date Stamp */
+    .stamp-container {
+      background: var(--glass-card);
+      border: 1px solid var(--glass-border);
+      border-radius: 10px;
+      padding: 0.75rem;
+      margin-bottom: 0.9rem;
+    }
+
+    .form-inputs-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.65rem;
+      margin-top: 0.4rem;
+    }
+
+    @media (max-width: 500px) {
+      .form-inputs-grid { grid-template-columns: 1fr; }
+    }
+
+    .input-field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+
+    .input-field-group label {
+      font-size: 0.74rem;
+      color: var(--text-sub);
+      font-weight: 500;
+    }
+
+    .input-field-group input, .input-field-group select {
+      background: var(--glass-card);
+      border: 1px solid var(--glass-border);
+      color: var(--text-main);
+      padding: 0.55rem 0.7rem;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      outline: none;
+    }
+
+    .input-field-group input:focus { border-color: var(--primary); }
+
+    /* STEP 3: Preview & Clean Horizontal Badges */
+    .final-output-card {
+      text-align: center;
+      background: var(--glass-card);
+      border: 1px solid var(--glass-border);
+      border-radius: 14px;
+      padding: 1.2rem 1rem;
+      margin-bottom: 1rem;
+    }
+
+    #finalPreviewImg {
+      max-width: 100%;
+      max-height: 250px;
+      border-radius: 6px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+      background: #ffffff;
+      margin: 0.6rem 0;
+    }
+
+    .compliance-badges-horizontal {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-top: 0.5rem;
+    }
+
+    .pill-cert {
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: #34d399;
+      font-size: 0.74rem;
+      font-weight: 600;
+      padding: 0.3rem 0.65rem;
+      border-radius: 20px;
+      white-space: nowrap;
+    }
+
+    /* Buttons */
+    .wizard-nav-btns {
+      display: flex;
+      gap: 0.6rem;
+      margin-top: 1rem;
+    }
+
+    .btn-nav-action {
+      flex: 1;
+      padding: 0.75rem;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+    }
+
+    .btn-forward {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+      color: #ffffff;
+    }
+
+    .btn-backward {
+      background: var(--glass-card);
+      border: 1px solid var(--glass-border);
+      color: var(--text-sub);
+    }
+
+    .btn-instant-dl {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: #ffffff;
+    }
+
+    /* Bottom Toast */
+    #toastRoot {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      width: 90%;
+      max-width: 380px;
+    }
+
+    .toast-card {
+      background: var(--glass-nav);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--glass-border);
+      color: var(--text-main);
+      padding: 0.65rem 1.1rem;
+      border-radius: 30px;
+      font-size: 0.8rem;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      animation: slideUp 0.25s ease;
+      cursor: pointer;
+    }
+
+    .toast-card.success { border-bottom: 3px solid #10b981; }
+    .toast-card.info { border-bottom: 3px solid var(--primary); }
+    .toast-card.warning { border-bottom: 3px solid #f59e0b; }
+
+    @keyframes slideUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    /* AI Loading Spinner */
+    .loader-backdrop {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(3, 7, 18, 0.85);
+      backdrop-filter: blur(10px);
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .pulse-ring {
+      width: 45px;
+      height: 45px;
+      border: 3px solid rgba(255, 255, 255, 0.08);
+      border-top-color: #ec4899;
+      border-radius: 50%;
+      animation: spinRing 0.8s linear infinite;
+    }
+
+    @keyframes spinRing { to { transform: rotate(360deg); } }
+
+    footer {
+      text-align: center;
+      margin-top: 2rem;
+      padding-top: 1.2rem;
+      border-top: 1px solid var(--glass-border);
+      color: var(--text-muted);
+      font-size: 0.74rem;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="ambientBg"></canvas>
+
+<!-- 1. Real Web Navigation Header with Day/Night Switcher -->
+<nav class="top-navbar">
+  <div class="nav-brand-box">
+    <div class="nav-brand-logo">
+      <svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+    </div>
+    <div class="nav-brand-title">E-Photo & Doc Converter Pro</div>
+  </div>
+  <div class="nav-right-controls">
+    <button class="theme-toggle-btn" id="themeToggleBtn" onclick="toggleTheme()">
+      <span id="themeIcon">☀️</span> <span id="themeLabel">Light</span>
+    </button>
+    <div class="nav-badge-cert">
+      <div class="cert-dot"></div>
+      <span>100% Private</span>
+    </div>
+  </div>
+</nav>
+
+<div class="main-container">
+  
+  <!-- Stepper -->
+  <div class="stepper-nav">
+    <div class="step-node active" id="stepNode1" onclick="switchStep(1)">
+      <span class="node-num">1</span>
+      <span>পোর্টাল ও মোড</span>
+    </div>
+    <div class="step-node" id="stepNode2" onclick="switchStep(2)">
+      <span class="node-num">2</span>
+      <span>স্মার্ট এডিটর</span>
+    </div>
+    <div class="step-node" id="stepNode3" onclick="switchStep(3)">
+      <span class="node-num">3</span>
+      <span>ডাউনলোড</span>
+    </div>
+  </div>
+
+  <!-- STEP 1: PORTAL & MODE SELECTION -->
+  <div class="step-view active" id="stepView1">
+    
+    <!-- Primary Mode Switch -->
+    <div class="mode-switch-box">
+      <button class="mode-btn active" id="btnModePhoto" onclick="setAppMode('photo')">
+        <span>📸</span> ছবি ও স্বাক্ষর রিসাইজার
+      </button>
+      <button class="mode-btn" id="btnModeDoc" onclick="setAppMode('doc')">
+        <span>📄</span> সরকারি ডকুমেন্ট ও আধার মার্জ
+      </button>
+    </div>
+
+    <div class="panel-header-row">
+      <div class="panel-title" id="step1Title">🏛️ সরকারি পোর্টাল বা পরীক্ষা বেছে নিন</div>
+      <span style="font-size:0.72rem; color:var(--text-sub);">ক্লিক করলেই অটো-সিলেক্ট</span>
+    </div>
+
+    <div class="search-wrapper">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="portalSearchInput" placeholder="পোর্টাল বা ডকুমেন্টের নাম খুঁজুন (PAN, Passport, WB Police, আধার কার্ড)...">
+    </div>
+
+    <div class="category-filter-bar" id="categoryFilterBar">
+      <button class="cat-pill active" onclick="filterPortalList('all')">সব পোর্টাল</button>
+      <button class="cat-pill" onclick="filterPortalList('central')">কেন্দ্রীয় সরকার</button>
+      <button class="cat-pill" onclick="filterPortalList('wb')">পশ্চিমবঙ্গ রাজ্য</button>
+      <button class="cat-pill" onclick="filterPortalList('pan')">প্যান ও পাসপোর্ট</button>
+      <button class="cat-pill" onclick="filterPortalList('bank')">ব্যাংকিং ও রেলওয়ে</button>
+      <button class="cat-pill" onclick="filterPortalList('custom')">কাস্টম</button>
+    </div>
+
+    <!-- 2 Column Portal Grid -->
+    <div class="two-col-grid" id="portalGridRoot"></div>
+  </div>
+
+  <!-- STEP 2: IMAGE EDITING OR DUAL-SIDE DOCUMENT MERGE -->
+  <div class="step-view" id="stepView2">
+    <div class="panel-header-row">
+      <div class="panel-title" id="step2Title">📸 ছবি আপলোড ও প্রফেশনাল এডিটিং</div>
+      <span id="selectedPortalBadge" style="font-size:0.78rem; color:var(--primary); font-weight:600;">-</span>
+    </div>
+
+    <!-- History & Undo/Redo Controls -->
+    <div class="history-bar">
+      <div class="history-btn-group">
+        <button class="btn-hist" id="btnUndo" onclick="handleUndo()" title="Undo (পূর্বে যান)">
+          ↶ আনডু
+        </button>
+        <button class="btn-hist" id="btnRedo" onclick="handleRedo()" title="Redo (সামনে যান)">
+          ↷ রিডু
+        </button>
+      </div>
+      <span style="font-size:0.72rem; color:var(--text-muted);" id="histCountLabel">এডিট হিস্ট্রি সক্রিয়</span>
+    </div>
+
+    <!-- Single Dropzone (for Photo Mode) -->
+    <div class="pro-dropzone" id="uploadZoneArea" onclick="document.getElementById('hiddenFileInput').click()">
+      <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      <strong style="font-size:0.88rem;">ছবি আপলোড করতে ক্লিক করুন বা ড্র্যাগ করুন</strong>
+      <p style="font-size:0.7rem; color:var(--text-muted);">সাপোর্টেড ফরম্যাট: JPG, JPEG, PNG</p>
+      <input type="file" id="hiddenFileInput" accept="image/jpeg, image/png, image/jpg" style="display:none;">
+    </div>
+
+    <!-- Dual Dropzone (for Document 2-in-1 Merge Mode) -->
+    <div class="dual-drop-row" id="docMergeRow" style="display:none;">
+      <div class="doc-side-box" id="frontDropBox" onclick="document.getElementById('docFrontInput').click()">
+        <span style="font-size:1.5rem; display:block;">🪪</span>
+        <strong style="font-size:0.82rem;">১. ফ্রন্ট সাইড (Front)</strong>
+        <p style="font-size:0.68rem; color:var(--text-muted);">আধার/আইডি-র সামনের অংশ</p>
+        <input type="file" id="docFrontInput" accept="image/jpeg, image/png, image/jpg" style="display:none;">
+      </div>
+      <div class="doc-side-box" id="backDropBox" onclick="document.getElementById('docBackInput').click()">
+        <span style="font-size:1.5rem; display:block;">🪪</span>
+        <strong style="font-size:0.82rem;">২. ব্যাক সাইড (Back)</strong>
+        <p style="font-size:0.68rem; color:var(--text-muted);">আধার/আইডি-র পেছনের অংশ</p>
+        <input type="file" id="docBackInput" accept="image/jpeg, image/png, image/jpg" style="display:none;">
+      </div>
+    </div>
+
+    <!-- Live Canvas Stage -->
+    <div class="editor-stage-card">
+      <canvas id="editorCanvas"></canvas>
+      <div style="font-size:0.72rem; color:var(--primary); margin-top:0.4rem;" id="canvasStatusMsg">✓ লাইভ প্রিভিউ সক্রিয় (মুখ ও কাঁধ স্বয়ংক্রিয় ফিট)</div>
+    </div>
+
+    <!-- Smart Zoom & Pan Sliders -->
+    <div class="slider-control-box" id="photoSlidersBox">
+      <div class="slider-item">
+        <label>🔍 স্মার্ট জুম (Zoom): <span id="zoomVal">100%</span></label>
+        <input type="range" id="zoomSlider" min="0.6" max="2.6" step="0.05" value="1.0">
+      </div>
+      <div class="slider-item">
+        <label>↕️ উল্লম্ব পজিশন (Pan Y): <span id="panYVal">0</span></label>
+        <input type="range" id="panYSlider" min="-180" max="180" step="2" value="0">
+      </div>
+    </div>
+
+    <!-- AI & Tool Actions -->
+    <div class="editor-tool-row" id="photoActionRow">
+      <button class="btn-action-tool btn-ai-cutout" id="btnRunAiCutout" onclick="executeAiCutout()">
+        <svg viewBox="0 0 24 24"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/><line x1="8.12" y1="8.12" x2="12" y2="12"/></svg>
+        🤖 AI ব্যাকগ্রাউন্ড কাটার
+      </button>
+      <button class="btn-action-tool" id="btnRefineEdges" onclick="refineAiEdges()" title="বারবার চালিয়ে এজ স্মুথ ও মোলায়েম করুন">
+        ✨ এজ স্মুথ ও রিফাইন
+      </button>
+      <button class="btn-action-tool" id="btnToggleCleanSig" onclick="toggleSignatureClean()">
+        <svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        সিগনেচার ক্লিন (B&W)
+      </button>
+      <button class="btn-action-tool" id="btnRotate90" onclick="rotateCanvas()">
+        <svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+        Rotate 90°
+      </button>
+      <button class="btn-action-tool" id="btnFlipHorizontal" onclick="flipCanvas()">
+        <svg viewBox="0 0 24 24"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>
+        Flip H
+      </button>
+    </div>
+
+    <!-- Background Color Swatches -->
+    <div class="color-swatch-row" id="photoColorRow">
+      <label style="font-size:0.75rem; color:var(--text-sub); font-weight:600;">ব্যাকগ্রাউন্ড কালার:</label>
+      <div class="color-circle-btn active" style="background:#ffffff;" data-color="#ffffff" title="Official White"></div>
+      <div class="color-circle-btn" style="background:#93c5fd;" data-color="#93c5fd" title="Sky Blue (Passport)"></div>
+      <div class="color-circle-btn" style="background:#0284c7;" data-color="#0284c7" title="Studio Deep Blue"></div>
+      <div class="color-circle-btn" style="background:#f1f5f9;" data-color="#f1f5f9" title="Off White"></div>
+      <input type="color" id="customColorPicker" value="#ffffff" style="cursor:pointer; width:26px; height:26px; border:none; background:transparent;">
+    </div>
+
+    <!-- Name & Date Stamp -->
+    <div class="stamp-container" id="photoStampBox">
+      <div style="display:flex; align-items:center; gap:0.4rem;">
+        <input type="checkbox" id="chkEnableStamp" style="cursor:pointer;">
+        <label for="chkEnableStamp" style="cursor:pointer; font-size:0.8rem; font-weight:600; color:var(--primary);">🏷️ নাম ও ছবি তোলার তারিখ (Name & Date Stamp) যুক্ত করুন</label>
+      </div>
+      <div class="form-inputs-grid" id="stampInputsGroup" style="display:none;">
+        <div class="input-field-group">
+          <label>প্রার্থীর নাম (Candidate Name)</label>
+          <input type="text" id="inpCandidateName" placeholder="e.g. RAHUL ROY">
+        </div>
+        <div class="input-field-group">
+          <label>তারিখ (Date / DOB)</label>
+          <input type="text" id="inpStampDate" placeholder="DD/MM/YYYY (e.g. 18/08/2026)">
+        </div>
+      </div>
+    </div>
+
+    <!-- Dimension Controls -->
+    <div class="form-inputs-grid">
+      <div class="input-field-group">
+        <label>প্রস্থ (Width px)</label>
+        <input type="number" id="inpDimWidth" value="213">
+      </div>
+      <div class="input-field-group">
+        <label>উচ্চতা (Height px)</label>
+        <input type="number" id="inpDimHeight" value="213">
+      </div>
+      <div class="input-field-group">
+        <label>ম্যাক্স সাইজ (Target KB)</label>
+        <input type="number" id="inpTargetMaxKB" value="50">
+      </div>
+      <div class="input-field-group">
+        <label>ফরম্যাট</label>
+        <select id="selFormat">
+          <option value="image/jpeg">JPG / JPEG (অফিসিয়াল)</option>
+          <option value="image/png">PNG</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="wizard-nav-btns">
+      <button class="btn-nav-action btn-backward" onclick="switchStep(1)">❮ পোর্টাল বদল</button>
+      <button class="btn-nav-action btn-forward" onclick="switchStep(3)">পরবর্তী ধাপ: ডাউনলোড ➔</button>
+    </div>
+  </div>
+
+  <!-- STEP 3: PREVIEW & HORIZONTAL CLEAN COMPLIANCE -->
+  <div class="step-view" id="stepView3">
+    <div class="panel-header-row">
+      <div class="panel-title">📥 ফাইনাল ভেরিফিকেশন ও ডাউনলোড</div>
+      <span style="font-size:0.72rem; color:#34d399; font-weight:600;">✓ গেজেট স্পেসিফিকেশন মান্য</span>
+    </div>
+
+    <div class="final-output-card">
+      <img id="finalPreviewImg" src="" alt="Final Output">
+      <div class="compliance-badges-horizontal">
+        <span class="pill-cert" id="badgeDimensions">ডাইমেনশন: -</span>
+        <span class="pill-cert" id="badgeFileSize">ফাইল সাইজ: -</span>
+        <span class="pill-cert">✓ 100% সার্টিফাইড কোয়ালিটি</span>
+      </div>
+    </div>
+
+    <div class="input-field-group">
+      <label style="font-weight:600; color:var(--text-main); margin-bottom:0.3rem;">ডাউনলোড ফাইলের নাম নির্ধারণ করুন (ক্লায়েন্টের পছন্দমতো নাম দিন):</label>
+      <div style="display:flex; background:var(--glass-card); border:1px solid var(--glass-border); border-radius:8px; overflow:hidden;">
+        <input type="text" id="finalDownloadFileName" value="govt_photo" style="border:none; background:transparent; padding:0.65rem; color:var(--text-main); flex:1; font-size:0.88rem; font-weight:600;">
+        <span id="finalExtensionLabel" style="background:rgba(255,255,255,0.08); padding:0.65rem 0.95rem; font-size:0.85rem; color:var(--primary); font-weight:700;">.jpg</span>
+      </div>
+    </div>
+
+    <button class="btn-nav-action btn-instant-dl" id="btnExecuteDownload" onclick="executeFinalDownload()" style="width:100%; margin-top:1.1rem; font-size:0.95rem; padding:0.9rem;">
+      <svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:#fff;fill:none;stroke-width:2;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      ইনস্ট্যান্ট ফাইল ডাউনলোড করুন
+    </button>
+
+    <div class="wizard-nav-btns">
+      <button class="btn-nav-action btn-backward" onclick="switchStep(2)">❮ এডিটরে ফিরুন</button>
+      <button class="btn-nav-action btn-backward" onclick="switchStep(1)">🏛️ অন্য পোর্টালে কনভার্ট</button>
+    </div>
+  </div>
+
+  <!-- Bottom Floating Toast -->
+  <div id="toastRoot"></div>
+
+  <!-- AI Loader -->
+  <div class="loader-backdrop" id="aiProcessLoader">
+    <div class="pulse-ring"></div>
+    <p style="color:#f472b6; font-weight:600; margin-top:0.8rem; font-size:0.85rem;">AI নিখুঁতভাবে ব্যাকগ্রাউন্ড কাটছে...</p>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <p>© 2026 <strong>E-Photo & Doc Converter Pro</strong>. All Rights Reserved. Designed for All India & West Bengal Applicants.</p>
+    <p style="font-size:0.7rem; margin-top:0.3rem;">NSDL, Passport Seva, SSC, UPSC, WBPSC, WBPRB, WBBPE পোর্টালের স্পেসিফিকেশন অনুযায়ী অপ্টিমাইজড।</p>
+  </footer>
+
+</div>
+
+<script>
+  // 1. Theme Switcher (Day & Night)
+  function toggleTheme() {
+    const current = document.documentElement.getAttribute('data-theme') || 'dark';
+    const next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    document.getElementById('themeIcon').innerText = next === 'dark' ? '☀️' : '🌙';
+    document.getElementById('themeLabel').innerText = next === 'dark' ? 'Light' : 'Dark';
+    triggerToast(`থিম পরিবর্তিত হয়েছে: ${next === 'dark' ? 'নাইট মোড' : 'ডে মোড'}`, 'info');
+  }
+
+  // 2. Ambient Fluid Background
+  const bgCanvas = document.getElementById('ambientBg');
+  const bgCtx = bgCanvas.getContext('2d');
+  let w, h, particles = [];
+
+  function handleResizeBg() {
+    w = bgCanvas.width = window.innerWidth;
+    h = bgCanvas.height = window.innerHeight;
+  }
+  window.addEventListener('resize', handleResizeBg);
+  handleResizeBg();
+
+  for (let i = 0; i < 18; i++) {
+    particles.push({
+      x: Math.random() * w,
+      y: Math.random() * h,
+      r: Math.random() * 70 + 25,
+      dx: (Math.random() - 0.5) * 0.35,
+      dy: (Math.random() - 0.5) * 0.35,
+      color: i % 2 === 0 ? 'rgba(56, 189, 248, 0.07)' : 'rgba(129, 140, 248, 0.07)'
+    });
+  }
+
+  function renderAmbientLoop() {
+    bgCtx.clearRect(0, 0, w, h);
+    particles.forEach(p => {
+      p.x += p.dx; p.y += p.dy;
+      if (p.x < -p.r) p.x = w + p.r;
+      if (p.x > w + p.r) p.x = -p.r;
+      if (p.y < -p.r) p.y = h + p.r;
+      if (p.y > h + p.r) p.y = -p.r;
+      bgCtx.beginPath();
+      bgCtx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      bgCtx.fillStyle = p.color;
+      bgCtx.fill();
+    });
+    requestAnimationFrame(renderAmbientLoop);
+  }
+  renderAmbientLoop();
+
+  // 3. Modern Floating Bottom Toast
+  function triggerToast(msg, type = 'info') {
+    const root = document.getElementById('toastRoot');
+    root.innerHTML = '';
+    const toast = document.createElement('div');
+    toast.className = `toast-card ${type}`;
+    const icon = type === 'success' ? '✓' : type === 'warning' ? '⚠️' : 'ℹ️';
+    toast.innerHTML = `<span>${icon}</span> <span>${msg}</span>`;
+    toast.onclick = () => toast.remove();
+    root.appendChild(toast);
+    setTimeout(() => toast.remove(), 3500);
+  }
+
+  // 4. Official Vector Insignia SVGs
+  const SVG_ICONS = {
+    ashoka: `<svg viewBox="0 0 24 24"><path fill="#f59e0b" d="M12 2L15 8L21 9L16.5 14L18 20L12 17L6 20L7.5 14L3 9L9 8L12 2Z"/></svg>`,
+    wb_biswa: `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="#38bdf8" stroke-width="2" fill="none"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" fill="#0284c7"/><path d="M2 12h20" stroke="#38bdf8" stroke-width="2"/></svg>`,
+    pan: `<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2" stroke="#38bdf8" stroke-width="2" fill="none"/><circle cx="9" cy="10" r="2" fill="#f472b6"/><path d="M15 8h3M15 12h3M7 16h10" stroke="#38bdf8" stroke-width="1.5"/></svg>`,
+    passport: `<svg viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="3" fill="#1e3a8a" stroke="#60a5fa" stroke-width="1.5"/><circle cx="12" cy="11" r="4" stroke="#fbbf24" stroke-width="1.5" fill="none"/><path d="M8 18h8" stroke="#fbbf24" stroke-width="1.5"/></svg>`,
+    police: `<svg viewBox="0 0 24 24"><path d="M12 2L4 5v6.09c0 5.05 3.41 9.76 8 10.91 4.59-1.15 8-5.86 8-10.91V5l-8-3z" fill="#1e40af" stroke="#60a5fa" stroke-width="1.5"/><path d="M12 7v5l3 3" stroke="#ffffff" stroke-width="1.5" fill="none"/></svg>`,
+    bank: `<svg viewBox="0 0 24 24"><path d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11M8 10v11M12 10v11M16 10v11M20 10v11" stroke="#34d399" stroke-width="1.5" fill="none"/></svg>`,
+    rail: `<svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="14" rx="2" stroke="#f87171" stroke-width="1.5" fill="none"/><path d="M4 11h16M12 3v8M8 15h.01M16 15h.01M6 21l2-4M18 21l-2-4" stroke="#f87171" stroke-width="1.5"/></svg>`,
+    doc: `<svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="#a78bfa" stroke-width="1.5" fill="none"/><polyline points="14 2 14 8 20 8" stroke="#a78bfa" stroke-width="1.5"/><line x1="16" y1="13" x2="8" y2="13" stroke="#a78bfa" stroke-width="1.5"/><line x1="16" y1="17" x2="8" y2="17" stroke="#a78bfa" stroke-width="1.5"/></svg>`,
+    custom: `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3" stroke="#a78bfa" stroke-width="2" fill="none"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" stroke="#a78bfa" stroke-width="1.5" fill="none"/></svg>`
+  };
+
+  // 5. Databases
+  const PHOTO_PORTALS = [
+    { id: 'pass_photo', cat: 'pan', icon: SVG_ICONS.passport, dept: 'MEA INDIA', name: 'Passport Seva Photo', cm: '৩.৫ সেমি × ৪.৫ সেমি', w: 413, h: 531, dpi: '300 DPI', kb: 100, defName: 'passport_seva_photo' },
+    { id: 'pan_photo', cat: 'pan', icon: SVG_ICONS.pan, dept: 'NSDL / PROTEAN', name: 'PAN Card Photo', cm: '৩.৫ সেমি × ২.৫ সেমি', w: 213, h: 213, dpi: '300 DPI', kb: 50, defName: 'pan_card_photo' },
+    { id: 'pan_sign', cat: 'pan', icon: SVG_ICONS.pan, dept: 'UTIITSL / NSDL', name: 'PAN Card Signature', cm: '২.০ সেমি × ৪.৫ সেমি', w: 400, h: 200, dpi: '600 DPI', kb: 30, defName: 'pan_card_signature' },
+    { id: 'ssc_photo', cat: 'central', icon: SVG_ICONS.ashoka, dept: 'SSC CENTRAL', name: 'SSC Photo (CGL/CHSL/GD)', cm: '৩.৫ সেমি × ৪.৫ সেমি', w: 275, h: 354, dpi: '200 DPI', kb: 50, defName: 'ssc_exam_photo' },
+    { id: 'ssc_sign', cat: 'central', icon: SVG_ICONS.ashoka, dept: 'SSC CENTRAL', name: 'SSC Signature', cm: '৪.০ সেমি × ২.০ সেমি', w: 140, h: 60, dpi: '200 DPI', kb: 20, defName: 'ssc_exam_signature' },
+    { id: 'upsc_photo', cat: 'central', icon: SVG_ICONS.ashoka, dept: 'UPSC CSE', name: 'UPSC Civil Services Photo', cm: '৩.৫ সেমি × ৩.৫ সেমি', w: 350, h: 350, dpi: '300 DPI', kb: 100, defName: 'upsc_civil_services_photo' },
+    { id: 'upsc_sign', cat: 'central', icon: SVG_ICONS.ashoka, dept: 'UPSC CSE', name: 'UPSC Signature', cm: '৩.৫ সেমি × ৩.৫ সেমি', w: 350, h: 350, dpi: '300 DPI', kb: 100, defName: 'upsc_signature' },
+    { id: 'wb_pol_photo', cat: 'wb', icon: SVG_ICONS.police, dept: 'WB POLICE / KP', name: 'WB Police Photo (SI/Constable)', cm: '৪.৫ সেমি × ৩.৫ সেমি', w: 138, h: 177, dpi: '200 DPI', kb: 50, defName: 'wb_police_photo' },
+    { id: 'wb_pol_sign', cat: 'wb', icon: SVG_ICONS.police, dept: 'WB POLICE / KP', name: 'WB Police Signature', cm: '১.৭ সেমি × ৪.৫ সেমি', w: 350, h: 100, dpi: '200 DPI', kb: 20, defName: 'wb_police_signature' },
+    { id: 'wb_cs_photo', cat: 'wb', icon: SVG_ICONS.wb_biswa, dept: 'WBPSC', name: 'WBCS / WBPSC Exam Photo', cm: '৪.৫ সেমি × ৩.৫ সেমি', w: 138, h: 177, dpi: '200 DPI', kb: 50, defName: 'wbpsc_wbcs_photo' },
+    { id: 'wb_tet_photo', cat: 'wb', icon: SVG_ICONS.wb_biswa, dept: 'WBBPE', name: 'WB Primary TET Photo', cm: '৪.৫ সেমি × ৩.৫ সেমি', w: 200, h: 230, dpi: '200 DPI', kb: 50, defName: 'wb_primary_tet_photo' },
+    { id: 'wb_panchayat', cat: 'wb', icon: SVG_ICONS.wb_biswa, dept: 'PANCHAYAT', name: 'Gram Panchayat Recruitment', cm: '৪.৫ সেমি × ৩.৫ সেমি', w: 138, h: 177, dpi: '200 DPI', kb: 50, defName: 'wb_panchayat_photo' },
+    { id: 'ibps_photo', cat: 'bank', icon: SVG_ICONS.bank, dept: 'IBPS / SBI', name: 'Banking Photo (PO/Clerk)', cm: '৪.৫ সেমি × ৩.৫ সেমি', w: 200, h: 230, dpi: '200 DPI', kb: 50, defName: 'bank_ibps_photo' },
+    { id: 'rrb_photo', cat: 'bank', icon: SVG_ICONS.rail, dept: 'RRB RAILWAY', name: 'Railway RRB Photo (NTPC)', cm: '৩৫ মিমি × ৪৫ মিমি', w: 240, h: 320, dpi: '200 DPI', kb: 70, defName: 'railway_rrb_photo' },
+    { id: 'nta_photo', cat: 'central', icon: SVG_ICONS.ashoka, dept: 'NTA EXAM', name: 'NEET / JEE Main Photo', cm: '৩.৫ সেমি × ৪.৫ সেমি', w: 350, h: 450, dpi: '300 DPI', kb: 200, defName: 'nta_neet_photo' },
+    { id: 'dl_photo', cat: 'central', icon: SVG_ICONS.ashoka, dept: 'PARIVAHAN', name: 'Driving License (Sarathi)', cm: '৪.২ সেমি × ৫.২ সেমি', w: 420, h: 525, dpi: '300 DPI', kb: 20, defName: 'driving_license_photo' },
+    { id: 'custom_preset', cat: 'custom', icon: SVG_ICONS.custom, dept: 'CUSTOM', name: 'কাস্টম সাইজ (User Defined)', cm: 'Custom Spec', w: 300, h: 300, dpi: '300 DPI', kb: 50, defName: 'custom_govt_photo' }
+  ];
+
+  const DOC_PORTALS = [
+    { id: 'aadhaar_merge', cat: 'central', icon: SVG_ICONS.doc, dept: 'UIDAI AADHAAR', name: 'আধার ২-ইন-১ ডুয়াল সাইড মার্জ', cm: 'Front + Back in 1 Page', w: 850, h: 1150, dpi: '200 DPI', kb: 200, defName: 'aadhaar_card_both_sides', isMerge: true },
+    { id: 'voter_merge', cat: 'central', icon: SVG_ICONS.doc, dept: 'ELECTION COMM', name: 'ভোটার কার্ড ২-ইন-১ মার্জ', cm: 'Front + Back in 1 Page', w: 850, h: 1150, dpi: '200 DPI', kb: 200, defName: 'voter_id_both_sides', isMerge: true },
+    { id: 'pan_doc_proof', cat: 'pan', icon: SVG_ICONS.pan, dept: 'NSDL / UTI', name: 'PAN ডকুমেন্ট / প্রুফ সাইজ', cm: 'A4 Standard Document', w: 850, h: 1200, dpi: '200 DPI', kb: 300, defName: 'pan_supporting_doc' },
+    { id: 'caste_cert', cat: 'wb', icon: SVG_ICONS.wb_biswa, dept: 'WB BACKWARD CLASS', name: 'কাস্ট সার্টিফিকেট আপলোড', cm: 'Standard Certificate', w: 800, h: 1100, dpi: '200 DPI', kb: 200, defName: 'caste_certificate_wb' },
+    { id: 'svmcm_doc', cat: 'wb', icon: SVG_ICONS.wb_biswa, dept: 'BIKASH BHAVAN', name: 'SVMCM ইনকাম/মার্কশিট প্রুফ', cm: 'Scholarship Document', w: 800, h: 1100, dpi: '200 DPI', kb: 400, defName: 'svmcm_marksheet_income' },
+    { id: 'custom_doc', cat: 'custom', icon: SVG_ICONS.custom, dept: 'CUSTOM DOC', name: 'কাস্টম ডকুমেন্ট সাইজ (<200KB)', cm: 'Custom Spec', w: 800, h: 1000, dpi: '200 DPI', kb: 200, defName: 'custom_document_pdf' }
+  ];
+
+  // State Management & History Stack
+  const AppState = {
+    mode: 'photo',
+    currentStep: 1,
+    selectedPortal: PHOTO_PORTALS[0],
+    uploadedImg: null,
+    docFrontImg: null,
+    docBackImg: null,
+    personMaskCanvas: null,
+    isAiSegmented: false,
+    selectedBg: '#ffffff',
+    rotation: 0,
+    flip: 1,
+    zoom: 1.0,
+    panY: 0,
+    isSigClean: false,
+    finalBlob: null,
+    isDirty: false
+  };
+
+  const HistoryManager = {
+    stack: [],
+    index: -1,
+    pushState: function() {
+      const stateClone = {
+        rotation: AppState.rotation,
+        flip: AppState.flip,
+        zoom: AppState.zoom,
+        panY: AppState.panY,
+        selectedBg: AppState.selectedBg,
+        isSigClean: AppState.isSigClean,
+        isAiSegmented: AppState.isAiSegmented,
+        personMaskCanvas: AppState.personMaskCanvas
+      };
+      this.stack = this.stack.slice(0, this.index + 1);
+      this.stack.push(stateClone);
+      this.index++;
+      this.updateUI();
+    },
+    undo: function() {
+      if (this.index > 0) {
+        this.index--;
+        this.applyState(this.stack[this.index]);
+      }
+    },
+    redo: function() {
+      if (this.index < this.stack.length - 1) {
+        this.index++;
+        this.applyState(this.stack[this.index]);
+      }
+    },
+    applyState: function(s) {
+      AppState.rotation = s.rotation;
+      AppState.flip = s.flip;
+      AppState.zoom = s.zoom;
+      AppState.panY = s.panY;
+      AppState.selectedBg = s.selectedBg;
+      AppState.isSigClean = s.isSigClean;
+      AppState.isAiSegmented = s.isAiSegmented;
+      AppState.personMaskCanvas = s.personMaskCanvas;
+
+      zoomSlider.value = s.zoom;
+      panYSlider.value = s.panY;
+      zoomVal.innerText = `${Math.round(s.zoom * 100)}%`;
+      panYVal.innerText = `${s.panY}px`;
+      
+      document.querySelectorAll('.color-circle-btn').forEach(b => {
+        b.classList.toggle('active', b.dataset.color === s.selectedBg);
+      });
+
+      this.updateUI();
+      renderLiveCanvas();
+    },
+    updateUI: function() {
+      document.getElementById('btnUndo').disabled = this.index <= 0;
+      document.getElementById('btnRedo').disabled = this.index >= this.stack.length - 1;
+      document.getElementById('histCountLabel').innerText = `স্টেপ: ${this.index + 1}/${this.stack.length}`;
+    }
+  };
+
+  // DOM Handles
+  const portalGridRoot = document.getElementById('portalGridRoot');
+  const portalSearchInput = document.getElementById('portalSearchInput');
+  const editorCanvas = document.getElementById('editorCanvas');
+  const hiddenFileInput = document.getElementById('hiddenFileInput');
+  const docFrontInput = document.getElementById('docFrontInput');
+  const docBackInput = document.getElementById('docBackInput');
+  const uploadZoneArea = document.getElementById('uploadZoneArea');
+  const docMergeRow = document.getElementById('docMergeRow');
+  const frontDropBox = document.getElementById('frontDropBox');
+  const backDropBox = document.getElementById('backDropBox');
+  const selectedPortalBadge = document.getElementById('selectedPortalBadge');
+  const inpDimWidth = document.getElementById('inpDimWidth');
+  const inpDimHeight = document.getElementById('inpDimHeight');
+  const inpTargetMaxKB = document.getElementById('inpTargetMaxKB');
+  const selFormat = document.getElementById('selFormat');
+  const finalDownloadFileName = document.getElementById('finalDownloadFileName');
+  const finalExtensionLabel = document.getElementById('finalExtensionLabel');
+  const finalPreviewImg = document.getElementById('finalPreviewImg');
+  const badgeDimensions = document.getElementById('badgeDimensions');
+  const badgeFileSize = document.getElementById('badgeFileSize');
+  const aiProcessLoader = document.getElementById('aiProcessLoader');
+  const chkEnableStamp = document.getElementById('chkEnableStamp');
+  const stampInputsGroup = document.getElementById('stampInputsGroup');
+  const inpCandidateName = document.getElementById('inpCandidateName');
+  const inpStampDate = document.getElementById('inpStampDate');
+  const customColorPicker = document.getElementById('customColorPicker');
+  const zoomSlider = document.getElementById('zoomSlider');
+  const panYSlider = document.getElementById('panYSlider');
+  const zoomVal = document.getElementById('zoomVal');
+  const panYVal = document.getElementById('panYVal');
+  const photoSlidersBox = document.getElementById('photoSlidersBox');
+  const photoActionRow = document.getElementById('photoActionRow');
+  const photoColorRow = document.getElementById('photoColorRow');
+  const photoStampBox = document.getElementById('photoStampBox');
+  const canvasStatusMsg = document.getElementById('canvasStatusMsg');
+
+  // MediaPipe AI Engine
+  let selfieSegmentation = null;
+  if (window.SelfieSegmentation) {
+    selfieSegmentation = new SelfieSegmentation({
+      locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/${file}`
+    });
+    selfieSegmentation.setOptions({ modelSelection: 1 });
+  }
+
+  // Switch App Mode (Photo vs Document)
+  function setAppMode(mode) {
+    AppState.mode = mode;
+    document.getElementById('btnModePhoto').classList.toggle('active', mode === 'photo');
+    document.getElementById('btnModeDoc').classList.toggle('active', mode === 'doc');
+
+    if (mode === 'photo') {
+      AppState.selectedPortal = PHOTO_PORTALS[0];
+      document.getElementById('categoryFilterBar').style.display = 'flex';
+      renderPortalGrid(PHOTO_PORTALS);
+      uploadZoneArea.style.display = 'flex';
+      docMergeRow.style.display = 'none';
+      photoSlidersBox.style.display = 'grid';
+      photoActionRow.style.display = 'flex';
+      photoColorRow.style.display = 'flex';
+      photoStampBox.style.display = 'block';
+      canvasStatusMsg.innerText = '✓ লাইভ প্রিভিউ সক্রিয় (মুখ ও কাঁধ স্বয়ংক্রিয় ফিট)';
+    } else {
+      AppState.selectedPortal = DOC_PORTALS[0];
+      document.getElementById('categoryFilterBar').style.display = 'none';
+      renderPortalGrid(DOC_PORTALS);
+      uploadZoneArea.style.display = 'none';
+      docMergeRow.style.display = 'grid';
+      photoSlidersBox.style.display = 'none';
+      photoActionRow.style.display = 'none';
+      photoColorRow.style.display = 'none';
+      photoStampBox.style.display = 'none';
+      canvasStatusMsg.innerText = '✓ ২-ইন-১ ডকুমেন্ট মার্জ মোড সক্রিয়';
+    }
+  }
+
+  // Step Switching
+  function switchStep(step) {
+    if (step === 3) {
+      if (AppState.mode === 'photo' && !AppState.uploadedImg) {
+        triggerToast('প্রথমে স্টেপ ২-তে একটি ছবি আপলোড করুন!', 'warning');
+        return;
+      }
+      if (AppState.mode === 'doc' && (!AppState.docFrontImg && !AppState.docBackImg && !AppState.uploadedImg)) {
+        triggerToast('প্রথমে স্টেপ ২-তে ডকুমেন্ট আপলোড করুন!', 'warning');
+        return;
+      }
+    }
+
+    AppState.currentStep = step;
+    document.querySelectorAll('.step-view').forEach((view, idx) => {
+      view.classList.toggle('active', idx + 1 === step);
+    });
+
+    document.querySelectorAll('.step-node').forEach((node, idx) => {
+      const s = idx + 1;
+      node.classList.toggle('active', s === step);
+      node.classList.toggle('completed', s < step);
+    });
+
+    if (step === 2) {
+      selectedPortalBadge.innerText = `${AppState.selectedPortal.name} (${AppState.selectedPortal.cm})`;
+      renderLiveCanvas();
+    }
+    if (step === 3) prepareFinalDownload();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // Render Portals List
+  function renderPortalGrid(list) {
+    portalGridRoot.innerHTML = '';
+    list.forEach(portal => {
+      const card = document.createElement('div');
+      card.className = `portal-item-card ${AppState.selectedPortal.id === portal.id ? 'selected' : ''}`;
+      card.innerHTML = `
+        <div class="portal-emblem-box">${portal.icon}</div>
+        <div class="portal-info-box">
+          <div class="portal-top-tags">
+            <span class="dept-badge">${portal.dept}</span>
+            <span class="dpi-badge">${portal.dpi}</span>
+          </div>
+          <div class="p-title-text">${portal.name}</div>
+          <div class="p-dim-row">
+            <span class="cm-tag">📐 মাপ: ${portal.cm}</span>
+            <span>🖥️ ${portal.w}×${portal.h} px | &lt;${portal.kb} KB</span>
+          </div>
+        </div>
+      `;
+      // Auto Advance to Step 2
+      card.onclick = () => {
+        AppState.selectedPortal = portal;
+        inpDimWidth.value = portal.w;
+        inpDimHeight.value = portal.h;
+        inpTargetMaxKB.value = portal.kb;
+        finalDownloadFileName.value = portal.defName;
+        document.querySelectorAll('.portal-item-card').forEach(c => c.classList.remove('selected'));
+        card.classList.add('selected');
+        triggerToast(`${portal.name} সিলেক্ট হয়েছে!`, 'success');
+        setTimeout(() => switchStep(2), 200);
+      };
+      portalGridRoot.appendChild(card);
+    });
+  }
+
+  function filterPortalList(cat) {
+    document.querySelectorAll('.cat-pill').forEach(btn => {
+      btn.classList.toggle('active', btn.innerText.toLowerCase().includes(cat) || (cat==='all' && btn.innerText.includes('সব')));
+    });
+    const q = portalSearchInput.value.toLowerCase().trim();
+    const currentList = AppState.mode === 'photo' ? PHOTO_PORTALS : DOC_PORTALS;
+    const filtered = currentList.filter(p => (cat === 'all' || p.cat === cat) && (p.name.toLowerCase().includes(q) || p.dept.toLowerCase().includes(q)));
+    renderPortalGrid(filtered);
+  }
+
+  portalSearchInput.oninput = () => {
+    const q = portalSearchInput.value.toLowerCase().trim();
+    const currentList = AppState.mode === 'photo' ? PHOTO_PORTALS : DOC_PORTALS;
+    const filtered = currentList.filter(p => p.name.toLowerCase().includes(q) || p.dept.toLowerCase().includes(q));
+    renderPortalGrid(filtered);
+  };
+
+  // Upload Handling (Photo)
+  hiddenFileInput.onchange = (e) => {
+    if (e.target.files.length) handleIncomingPhoto(e.target.files[0]);
+  };
+
+  function handleIncomingPhoto(file) {
+    if (!file.type.startsWith('image/')) {
+      triggerToast('সঠিক ইমেজ ফাইল (JPG/PNG) আপলোড করুন!', 'warning');
+      return;
+    }
+    AppState.isDirty = true;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const img = new Image();
+      img.onload = () => {
+        AppState.uploadedImg = img;
+        AppState.isAiSegmented = false;
+        AppState.personMaskCanvas = null;
+        AppState.zoom = 1.0;
+        AppState.panY = 0;
+        AppState.rotation = 0;
+        AppState.flip = 1;
+        zoomSlider.value = 1.0;
+        panYSlider.value = 0;
+        zoomVal.innerText = '100%';
+        panYVal.innerText = '0';
+        HistoryManager.stack = [];
+        HistoryManager.index = -1;
+        HistoryManager.pushState();
+        triggerToast(`ছবি লোড হয়েছে (${img.width}×${img.height} px)`, 'success');
+        renderLiveCanvas();
+      };
+      img.src = ev.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  // Upload Handling (Dual-Side Documents)
+  docFrontInput.onchange = (e) => {
+    if (e.target.files.length) {
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        const img = new Image();
+        img.onload = () => {
+          AppState.docFrontImg = img;
+          frontDropBox.classList.add('loaded');
+          triggerToast('ডকুমেন্ট ফ্রন্ট সাইড লোড হয়েছে!', 'success');
+          renderLiveCanvas();
+        };
+        img.src = ev.target.result;
+      };
+      reader.readAsDataURL(e.target.files[0]);
+    }
+  };
+
+  docBackInput.onchange = (e) => {
+    if (e.target.files.length) {
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        const img = new Image();
+        img.onload = () => {
+          AppState.docBackImg = img;
+          backDropBox.classList.add('loaded');
+          triggerToast('ডকুমেন্ট ব্যাক সাইড লোড হয়েছে!', 'success');
+          renderLiveCanvas();
+        };
+        img.src = ev.target.result;
+      };
+      reader.readAsDataURL(e.target.files[0]);
+    }
+  };
+
+  // Undo / Redo Trigger Handlers
+  function handleUndo() { HistoryManager.undo(); }
+  function handleRedo() { HistoryManager.redo(); }
+
+  // Zoom & Pan Sliders Handlers
+  zoomSlider.oninput = () => {
+    AppState.zoom = parseFloat(zoomSlider.value);
+    zoomVal.innerText = `${Math.round(AppState.zoom * 100)}%`;
+    renderLiveCanvas();
+  };
+  zoomSlider.onchange = () => { HistoryManager.pushState(); };
+
+  panYSlider.oninput = () => {
+    AppState.panY = parseInt(panYSlider.value, 10);
+    panYVal.innerText = `${AppState.panY}px`;
+    renderLiveCanvas();
+  };
+  panYSlider.onchange = () => { HistoryManager.pushState(); };
+
+  // AI Cutout & Multi-Pass Edge Smoothing
+  async function executeAiCutout() {
+    if (!AppState.uploadedImg) {
+      triggerToast('প্রথমে একটি ছবি আপলোড করুন!', 'warning');
+      return;
+    }
+    if (!selfieSegmentation) {
+      triggerToast('AI মডেল লোড হচ্ছে, কিছুক্ষণ পর চেষ্টা করুন...', 'info');
+      return;
+    }
+
+    aiProcessLoader.style.display = 'flex';
+    selfieSegmentation.onResults((results) => {
+      const maskCanvas = document.createElement('canvas');
+      maskCanvas.width = AppState.uploadedImg.width;
+      maskCanvas.height = AppState.uploadedImg.height;
+      const mCtx = maskCanvas.getContext('2d');
+
+      // Sub-Pixel Feathering & Smoothing Filter
+      mCtx.filter = 'blur(1.2px)';
+      mCtx.drawImage(results.segmentationMask, 0, 0, maskCanvas.width, maskCanvas.height);
+      mCtx.filter = 'none';
+
+      mCtx.globalCompositeOperation = 'source-in';
+      mCtx.drawImage(AppState.uploadedImg, 0, 0);
+
+      AppState.personMaskCanvas = maskCanvas;
+      AppState.isAiSegmented = true;
+      aiProcessLoader.style.display = 'none';
+      HistoryManager.pushState();
+      triggerToast('AI ব্যাকগ্রাউন্ড নিখুঁতভাবে রিমুভ হয়েছে!', 'success');
+      renderLiveCanvas();
+    });
+
+    await selfieSegmentation.send({ image: AppState.uploadedImg });
+  }
+
+  function refineAiEdges() {
+    if (!AppState.isAiSegmented || !AppState.personMaskCanvas) {
+      triggerToast('প্রথমে AI ব্যাকগ্রাউন্ড কাটার চালান!', 'info');
+      return;
+    }
+    const mCanvas = AppState.personMaskCanvas;
+    const mCtx = mCanvas.getContext('2d');
+    const imgData = mCtx.getImageData(0, 0, mCanvas.width, mCanvas.height);
+    const d = imgData.data;
+    for (let i = 3; i < d.length; i += 4) {
+      if (d[i] > 10 && d[i] < 240) {
+        d[i] = Math.min(255, d[i] + 15); // Anti-tear fill edge alpha
+      }
+    }
+    mCtx.putImageData(imgData, 0, 0);
+    HistoryManager.pushState();
+    triggerToast('কাটিং এজ আরও মসৃণ ও রিফাইন করা হয়েছে!', 'success');
+    renderLiveCanvas();
+  }
+
+  // Color Swatches
+  document.querySelectorAll('.color-circle-btn').forEach(btn => {
+    btn.onclick = () => {
+      document.querySelectorAll('.color-circle-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      AppState.selectedBg = btn.dataset.color;
+      HistoryManager.pushState();
+      renderLiveCanvas();
+    };
+  });
+  customColorPicker.oninput = (e) => {
+    AppState.selectedBg = e.target.value;
+    document.querySelectorAll('.color-circle-btn').forEach(b => b.classList.remove('active'));
+    renderLiveCanvas();
+  };
+  customColorPicker.onchange = () => { HistoryManager.pushState(); };
+
+  // Transformations
+  function rotateCanvas() {
+    AppState.rotation = (AppState.rotation + 90) % 360;
+    HistoryManager.pushState();
+    renderLiveCanvas();
+  }
+
+  function flipCanvas() {
+    AppState.flip *= -1;
+    HistoryManager.pushState();
+    renderLiveCanvas();
+  }
+
+  function toggleSignatureClean() {
+    AppState.isSigClean = !AppState.isSigClean;
+    HistoryManager.pushState();
+    renderLiveCanvas();
+  }
+
+  // Stamp Controls
+  chkEnableStamp.onchange = () => {
+    stampInputsGroup.style.display = chkEnableStamp.checked ? 'grid' : 'none';
+    renderLiveCanvas();
+  };
+  inpCandidateName.oninput = renderLiveCanvas;
+  inpStampDate.oninput = renderLiveCanvas;
+  inpDimWidth.oninput = renderLiveCanvas;
+  inpDimHeight.oninput = renderLiveCanvas;
+  selFormat.onchange = () => {
+    finalExtensionLabel.innerText = selFormat.value === 'image/png' ? '.png' : '.jpg';
+  };
+
+  // Core Canvas Rendering Engine
+  function renderLiveCanvas() {
+    const tw = parseInt(inpDimWidth.value, 10);
+    const th = parseInt(inpDimHeight.value, 10);
+
+    editorCanvas.width = tw;
+    editorCanvas.height = th;
+    const ctx = editorCanvas.getContext('2d');
+
+    // Fill Canvas Background
+    ctx.fillStyle = AppState.selectedBg;
+    ctx.fillRect(0, 0, tw, th);
+
+    // MODE A: PHOTO & SIGNATURE MODE
+    if (AppState.mode === 'photo') {
+      if (!AppState.uploadedImg) return;
+
+      ctx.save();
+      ctx.translate(tw / 2, th / 2 + AppState.panY);
+      ctx.rotate((AppState.rotation * Math.PI) / 180);
+      ctx.scale(AppState.flip, 1);
+
+      const source = AppState.isAiSegmented && AppState.personMaskCanvas ? AppState.personMaskCanvas : AppState.uploadedImg;
+      const imgAspect = source.width / source.height;
+      const canvasAspect = tw / th;
+
+      let baseW, baseH;
+      if (imgAspect > canvasAspect) {
+        baseH = th;
+        baseW = th * imgAspect;
+      } else {
+        baseW = tw;
+        baseH = tw / imgAspect;
+      }
+
+      // Apply Zoom (Ensures face & shoulder fill 75-80% of canvas)
+      const finalW = baseW * AppState.zoom;
+      const finalH = baseH * AppState.zoom;
+
+      ctx.drawImage(source, -finalW / 2, -finalH / 2, finalW, finalH);
+      ctx.restore();
+
+      // Signature Clean Filter
+      if (AppState.isSigClean) {
+        const imgData = ctx.getImageData(0, 0, tw, th);
+        const d = imgData.data;
+        for (let i = 0; i < d.length; i += 4) {
+          const avg = 0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2];
+          const v = avg > 175 ? 255 : avg < 90 ? 0 : avg;
+          d[i] = d[i + 1] = d[i + 2] = v;
+        }
+        ctx.putImageData(imgData, 0, 0);
+      }
+
+      // Name & DOP Stamp Banner
+      if (chkEnableStamp.checked && inpCandidateName.value.trim()) {
+        const bH = Math.max(26, Math.floor(th * 0.18));
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, th - bH, tw, bH);
+        ctx.strokeStyle = '#000000';
+        ctx.lineWidth = 1;
+        ctx.strokeRect(0, th - bH, tw, bH);
+
+        ctx.fillStyle = '#000000';
+        ctx.textAlign = 'center';
+        ctx.font = `bold ${Math.floor(bH * 0.38)}px sans-serif`;
+        ctx.fillText(inpCandidateName.value.toUpperCase(), tw / 2, th - bH * 0.55);
+
+        if (inpStampDate.value.trim()) {
+          ctx.font = `600 ${Math.floor(bH * 0.32)}px sans-serif`;
+          ctx.fillText(`DOP: ${inpStampDate.value.trim()}`, tw / 2, th - bH * 0.15);
+        }
+      }
+    } 
+    // MODE B: DOCUMENT & 2-IN-1 AADHAAR MERGER
+    else {
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, tw, th);
+
+      const front = AppState.docFrontImg;
+      const back = AppState.docBackImg;
+
+      if (front && back) {
+        const halfH = (th - 40) / 2;
+        ctx.drawImage(front, 20, 15, tw - 40, halfH);
+        ctx.drawImage(back, 20, halfH + 25, tw - 40, halfH);
+        
+        ctx.strokeStyle = '#cbd5e1';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(30, halfH + 20);
+        ctx.lineTo(tw - 30, halfH + 20);
+        ctx.stroke();
+      } else if (front) {
+        ctx.drawImage(front, 20, 20, tw - 40, th - 40);
+      } else if (back) {
+        ctx.drawImage(back, 20, 20, tw - 40, th - 40);
+      }
+    }
+  }
+
+  // Binary Precision KB Compression & Final Step Prep
+  async function prepareFinalDownload() {
+    renderLiveCanvas();
+    const maxKB = parseFloat(inpTargetMaxKB.value);
+    const format = selFormat.value;
+
+    let low = 0.05, high = 0.98, bestBlob = null;
+    for (let i = 0; i < 8; i++) {
+      const mid = (low + high) / 2;
+      const b = await new Promise(res => editorCanvas.toBlob(res, format, mid));
+      if (b.size / 1024 <= maxKB) {
+        bestBlob = b;
+        low = mid;
+      } else {
+        high = mid;
+      }
+    }
+    if (!bestBlob) bestBlob = await new Promise(res => editorCanvas.toBlob(res, format, 0.05));
+
+    AppState.finalBlob = bestBlob;
+    finalPreviewImg.src = URL.createObjectURL(bestBlob);
+    badgeDimensions.innerText = `ডাইমেনশন: ${inpDimWidth.value}×${inpDimHeight.value} px (${AppState.selectedPortal.cm})`;
+    badgeFileSize.innerText = `ফাইল সাইজ: ${(bestBlob.size / 1024).toFixed(1)} KB (Max: ${maxKB} KB)`;
+    triggerToast('ফাইল প্রস্তুত হয়েছে!', 'success');
+  }
+
+  // 100% Guaranteed Custom Client Filename Download
+  function executeFinalDownload() {
+    if (!AppState.finalBlob) {
+      triggerToast('কোনো ফাইল প্রস্তুত নেই!', 'warning');
+      return;
+    }
+    // Get client provided raw name & sanitize invalid chars
+    let rawName = finalDownloadFileName.value.trim();
+    if (!rawName) rawName = AppState.selectedPortal.defName || 'govt_document';
+    const safeName = rawName.replace(/[/\\?%*:|"<>]/g, '_');
+    const ext = selFormat.value === 'image/png' ? '.png' : '.jpg';
+    const fullName = `${safeName}${ext}`;
+
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(AppState.finalBlob);
+    a.download = fullName;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    triggerToast(`"${fullName}" সফলভাবে ডাউনলোড হয়েছে!`, 'success');
+  }
+
+  // Anti-Refresh Protection
+  window.addEventListener('beforeunload', (e) => {
+    if (AppState.isDirty) {
+      e.preventDefault();
+      e.returnValue = '';
+    }
+  });
+
+  // Start Application
+  renderPortalGrid(PHOTO_PORTALS);
+</script>
+
+</body>
+</html>
